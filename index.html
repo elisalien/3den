@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>:3den — Projet de soirée</title>
+<style>
+  :root {
+    /* Fond gris sombre */
+    --bg: #1a1b22;
+    --bg-elevated: #22232c;
+    --bg-hover: #2a2c36;
+    --border: #2f313c;
+
+    /* Texte */
+    --text: #e8e8ee;
+    --text-muted: #9a9ba8;
+    --text-dim: #6b6c78;
+
+    /* Accents pastel kikoojap */
+    --accent: #f7a8c4;      /* rose pastel (Teto-style) */
+    --accent-2: #a8e0f0;    /* cyan pastel (Miku-style) */
+    --accent-3: #c9b8f0;    /* lavande */
+    --accent-warm: #f0d89a; /* jaune pastel */
+
+    /* Layout */
+    --sidebar-w: 260px;
+    --max-content: 780px;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Hiragino Sans",
+                 "Noto Sans JP", sans-serif;
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ===== Sidebar ===== */
+  aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: var(--bg-elevated);
+    border-right: 1px solid var(--border);
+    padding: 32px 24px;
+    overflow-y: auto;
+  }
+
+  .brand {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    color: var(--text);
+  }
+  .brand span { color: var(--accent); }
+
+  .brand-sub {
+    font-size: 12.5px;
+    color: var(--text-dim);
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  nav li { margin: 2px 0; }
+
+  nav a {
+    display: block;
+    padding: 8px 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: background 0.15s ease, color 0.15s ease;
+    border-left: 2px solid transparent;
+  }
+  nav a:hover {
+    background: var(--bg-hover);
+    color: var(--text);
+  }
+  nav a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: var(--bg-hover);
+  }
+
+  .nav-section {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    margin: 20px 12px 6px;
+    font-weight: 600;
+  }
+
+  /* ===== Content ===== */
+  main {
+    margin-left: var(--sidebar-w);
+    padding: 64px 56px;
+    max-width: calc(var(--max-content) + 112px);
+  }
+
+  section {
+    margin-bottom: 72px;
+    scroll-margin-top: 24px;
+  }
+
+  h1 {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+  h1 .dot { color: var(--accent); }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    margin: 0 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  h2::before {
+    content: "# ";
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  h3 {
+    font-size: 15.5px;
+    font-weight: 600;
+    margin: 24px 0 10px;
+    color: var(--text);
+  }
+
+  p { margin: 0 0 14px; color: var(--text); }
+
+  a {
+    color: var(--accent-2);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+  a:hover { border-bottom-color: var(--accent-2); }
+
+  ul.clean {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 14px;
+  }
+  ul.clean li {
+    padding: 6px 0;
+    color: var(--text);
+  }
+  ul.clean li::before {
+    content: "—  ";
+    color: var(--accent);
+  }
+
+  .intro {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+
+  /* Notes en italique / infos secondaires */
+  .note {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    font-style: italic;
+    padding: 10px 14px;
+    border-left: 2px solid var(--accent-3);
+    background: var(--bg-elevated);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin: 10px 0 16px;
+  }
+
+  /* Cartes artistes */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .card:hover {
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .card-name {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+  .card-name a { color: var(--text); border: none; }
+  .card-name a:hover { color: var(--accent); }
+
+  .card-location {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+
+  .card-desc {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .card-contact {
+    margin-top: 8px;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+  .card-contact a { color: var(--accent-2); }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--bg-hover);
+    color: var(--text-muted);
+    margin-right: 6px;
+    margin-bottom: 4px;
+    border: 1px solid var(--border);
+  }
+  .tag.hyperpop  { color: var(--accent);   border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); }
+  .tag.hard     { color: var(--accent-warm); border-color: color-mix(in srgb, var(--accent-warm) 40%, var(--border)); }
+  .tag.vocaloid { color: var(--accent-2);  border-color: color-mix(in srgb, var(--accent-2) 40%, var(--border)); }
+  .tag.bass     { color: var(--accent-3);  border-color: color-mix(in srgb, var(--accent-3) 40%, var(--border)); }
+
+  /* Status partenaires */
+  .status-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .status-box {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .status-box h3 { margin-top: 0; }
+  .status-box.confirmed { border-left: 3px solid var(--accent-2); }
+  .status-box.pending   { border-left: 3px solid var(--accent-warm); }
+
+  /* Activités */
+  .activity {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    margin-bottom: 10px;
+  }
+  .activity-title {
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .activity-title::before {
+    content: "▸ ";
+    color: var(--accent);
+  }
+  .activity-detail {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    line-height: 1.55;
+  }
+
+  /* Citation */
+  blockquote {
+    margin: 8px 0;
+    padding: 10px 14px;
+    border-left: 2px solid var(--accent);
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 13.5px;
+    background: var(--bg-elevated);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  /* Région header */
+  .region {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 28px 0 12px;
+  }
+  .region-flag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+  }
+  .region-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 860px) {
+    :root { --sidebar-w: 0px; }
+    aside {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+    }
+    .brand-sub { margin-bottom: 16px; }
+    nav ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+    }
+    .nav-section { width: 100%; margin: 8px 4px 2px; }
+    main { padding: 40px 24px; }
+    h1 { font-size: 28px; }
+    .status-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Scrollbar discrète */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--bg-hover); }
+</style>
+</head>
+<body>
+
+<aside>
+  <div class="brand">:3den <span>/</span> Eden</div>
+  <div class="brand-sub">nom provisoire · logo provisoire</div>
+
+  <nav>
+    <div class="nav-section">Le projet</div>
+    <ul>
+      <li><a href="#concept">Concept</a></li>
+      <li><a href="#activites">Activités</a></li>
+      <li><a href="#date">Date</a></li>
+    </ul>
+
+    <div class="nav-section">Partenaires</div>
+    <ul>
+      <li><a href="#partenaires">Partenaires</a></li>
+      <li><a href="#cosplay">Jurys cosplay</a></li>
+    </ul>
+
+    <div class="nav-section">Line-up</div>
+    <ul>
+      <li><a href="#lineup">Idée line-up</a></li>
+      <li><a href="#france">France</a></li>
+      <li><a href="#allemagne">Allemagne</a></li>
+      <li><a href="#uk">UK</a></li>
+      <li><a href="#usa">USA</a></li>
+      <li><a href="#japon">Japon</a></li>
+    </ul>
+  </nav>
+</aside>
+
+<main>
+
+  <section id="concept">
+    <h1>:3den<span class="dot">.</span></h1>
+    <p class="intro">Soirées autour de la pop culture, anime et jeux vidéos — à la Rayonne.</p>
+    <p>L'espace « bar » de la Rayonne est utilisé pour installer des stands de merchandising et créateur·ices en lien avec les thèmes de la soirée.</p>
+  </section>
+
+  <section id="activites">
+    <h2>Activités</h2>
+
+    <div class="activity">
+      <div class="activity-title">Concours cosplay avec prix à gagner</div>
+      <div class="activity-detail">Création d'un podium dans la Rayonne pour défiler ?</div>
+    </div>
+
+    <div class="activity">
+      <div class="activity-title">Diffusion d'un « concert » Vocaloid</div>
+      <div class="activity-detail">
+        Projection de 1h à 1h30 d'un personnage en 3D avec ses chansons sur un écran géant.
+        C'est ce format qui a fait complet jusqu'ici.
+        <br><a href="https://www.youtube.com/watch?v=Ykb6Om9upsw&list=RDYkb6Om9upsw&start_radio=1&t=123s" target="_blank" rel="noopener">→ Exemple de concert</a>
+      </div>
+    </div>
+
+    <div class="activity">
+      <div class="activity-title">Tournoi jeu vidéo</div>
+      <div class="activity-detail">
+        Just Dance ? Project Sekai* (iPad) ? Tetris ? À définir en fonction des associations lyonnaises qui auront de la dispo.
+      </div>
+      <div class="note">
+        * Project Sekai est en rapport avec Vocaloid, pas besoin de matos supplémentaire — les joueurs prennent leur iPad et je peux gérer la diffusion depuis mon ordinateur sur l'écran géant.
+      </div>
+    </div>
+
+    <div class="activity">
+      <div class="activity-title">Stand karaoké spécial anime / vocaloid</div>
+    </div>
+
+    <div class="activity">
+      <div class="activity-title">DJ Set ou concert</div>
+      <div class="activity-detail">En fonction du line-up retenu.</div>
+    </div>
+  </section>
+
+  <section id="date">
+    <h2>Date</h2>
+    <p>
+      Même week-end que la <strong>Japan Touch</strong>, qui a généralement lieu le <strong>dernier week-end de novembre</strong>.
+    </p>
+    <p class="intro">
+      Les dates définitives devraient tomber après l'édition de printemps (25 / 26 avril).
+    </p>
+  </section>
+
+  <section id="partenaires">
+    <h2>Partenaires</h2>
+    <div class="status-grid">
+      <div class="status-box confirmed">
+        <h3>Confirmés</h3>
+        <ul class="clean">
+          <li><a href="https://otakustuff.eu/" target="_blank" rel="noopener">OtakuStuff</a> — merch</li>
+          <li><a href="https://vocafest.co.uk/" target="_blank" rel="noopener">Vocafest</a> — quasi sûr, 2 collabs déjà faites</li>
+        </ul>
+      </div>
+      <div class="status-box pending">
+        <h3>À confirmer</h3>
+        <p style="color: var(--text-dim); font-size: 13.5px; margin: 0;">À compléter.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="cosplay">
+    <h2>Jurys cosplay — idées</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/becca_pix/" target="_blank" rel="noopener">Becca Pix</a>
+        </div>
+        <div class="card-desc">Connue pour ses costumes DIY hyper efficaces.</div>
+      </div>
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/chandary._/" target="_blank" rel="noopener">Chandary</a>
+        </div>
+        <div class="card-location">Lyon</div>
+        <div class="card-desc">Cosplayeuse lyonnaise avec p l e i n d'abonné·es Instagram.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lineup">
+    <h2>Idée line-up</h2>
+    <p><strong>Utsu-P ou Gupi</strong> + 2 DJ lyonnais (1 tête d'affiche puis des locaux).</p>
+    <div class="note">
+      Ce répertoire n'est pas entièrement réaliste, mais il donne une bonne idée de l'ambiance musicale recherchée.
+    </div>
+  </section>
+
+  <section id="france">
+    <div class="region">
+      <span class="region-flag">🇫🇷 France</span>
+      <div class="region-line"></div>
+    </div>
+    <div class="note" style="border-left-color: var(--text-dim);">
+      J'ai du mal à trouver des DJ kikoojap français qui ne font pas que des styles très hard.
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/futureisoffline/" target="_blank" rel="noopener">Future is offline</a>
+        </div>
+        <div class="card-location">Lyon</div>
+        <div><span class="tag hard">hard music</span></div>
+        <div class="card-desc">Assez connu dans la commu et localement.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/hypercore.collective/" target="_blank" rel="noopener">Hypercore Collective</a>
+        </div>
+        <div class="card-location">Paris</div>
+        <div class="card-desc">
+          Collectif queeros de Paris qui font plein de trucs chouettes.
+          J'ai déjà fait venir 2 de leurs DJ à l'événement de la Pente : DJ Plaisir et TMagyk.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/femm.net__/" target="_blank" rel="noopener">Femm-Net</a>
+        </div>
+        <div class="card-location">Paris</div>
+        <div class="card-desc">
+          Autre collectif queeros spécialisé dans les mêmes thèmes que l'asso. Tout jeune.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/reel/DMfj3a4o2cg/" target="_blank" rel="noopener">Kaeryth</a>
+        </div>
+        <div class="card-location">Le Mans</div>
+        <div class="card-desc">
+          Joue de la harpe laser en cosplay du personnage — c'est génial.
+          Par contre elle vient avec son matos et c'est pas la porte à côté.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="allemagne">
+    <div class="region">
+      <span class="region-flag">🇩🇪 Allemagne</span>
+      <div class="region-line"></div>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-name">
+          <a href="https://soundcloud.com/djknux" target="_blank" rel="noopener">DJKnuX</a>
+        </div>
+        <div class="card-desc">DJ spécialisé dans les sets Anime.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="uk">
+    <div class="region">
+      <span class="region-flag">🇬🇧 Royaume-Uni</span>
+      <div class="region-line"></div>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/dubtendo_uk/" target="_blank" rel="noopener">Dubtendo</a>
+        </div>
+        <div><span class="tag bass">UK bass</span></div>
+        <div class="card-desc">Des reprises des sons de Nintendo en UK bass.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="usa">
+    <div class="region">
+      <span class="region-flag">🇺🇸 USA</span>
+      <div class="region-line"></div>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/gupimusic/" target="_blank" rel="noopener">Gupi</a>
+        </div>
+        <div><span class="tag hyperpop">hyperpop</span></div>
+        <div class="card-desc">Mes petites infos m'ont dit qu'il passait en Europe en novembre…</div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/4kcarpet/" target="_blank" rel="noopener">PassengerPrincess</a>
+        </div>
+        <div><span class="tag hyperpop">hyperpop</span></div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/femnmofficial/" target="_blank" rel="noopener">FEM&amp;M</a>
+        </div>
+        <div><span class="tag hyperpop">hyperpop</span></div>
+        <div class="card-contact">
+          Booking : <a href="mailto:Caleb@mbtouring.us">Caleb@mbtouring.us</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/russelbucc/" target="_blank" rel="noopener">Russel Bucc</a>
+        </div>
+        <div><span class="tag hyperpop">hyperpop</span></div>
+        <div class="card-desc">TW furry.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="japon">
+    <div class="region">
+      <span class="region-flag">🇯🇵 Japon</span>
+      <div class="region-line"></div>
+    </div>
+    <div class="note">
+      Pour contacter les producers japonais, prévoir une version du mail en anglais et une en japonais, en précisant qu'on a utilisé des outils de traduction automatiques.
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/utsupiii/" target="_blank" rel="noopener">Utsu-P</a>
+        </div>
+        <div>
+          <span class="tag vocaloid">vocaloid</span>
+          <span class="tag hard">metalcore</span>
+        </div>
+        <div class="card-desc">Producer Vocaloid — indépendant.</div>
+        <div class="card-contact">
+          Contact : <a href="mailto:utsupii@ymail.ne.jp">utsupii@ymail.ne.jp</a>
+        </div>
+        <blockquote>
+          Les demandes de DJ et de performances en direct sont les bienvenues.
+          En fonction de l'ampleur du projet, nous vous proposerons des honoraires
+          plus réalistes que vous ne le pensez.
+        </blockquote>
+      </div>
+
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.instagram.com/pinocchiop_official/" target="_blank" rel="noopener">PinocchioP</a>
+        </div>
+        <div><span class="tag vocaloid">vocaloid</span></div>
+        <div class="card-desc">Producer Vocaloid — a déjà tourné en Asie.</div>
+        <div class="card-contact">
+          Contact label : <a href="http://umaa.net/form/contact.html" target="_blank" rel="noopener">umaa.net</a>
+          · connu pour répondre sur <a href="https://x.com/pinocchiop" target="_blank" rel="noopener">X / Twitter</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-name">
+          <a href="https://www.youtube.com/user/hachiojip" target="_blank" rel="noopener">Hachioji-P</a>
+        </div>
+        <div><span class="tag vocaloid">vocaloid</span></div>
+        <div class="card-desc">Producer Vocaloid.</div>
+        <div class="card-contact">
+          Contact : <a href="http://hachiojip.net/?page_id=2" target="_blank" rel="noopener">hachiojip.net</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // Surlignage du lien de nav actif au scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
